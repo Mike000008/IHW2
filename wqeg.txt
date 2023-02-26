@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def f(x):
+    return np.arctan(x) - x
+
+
+a = -2
+b = 2
+N = [15, 20, 25]
+
+for n in N:
+    x = np.linspace(a, b, n)
+    y = f(x)
+
+    
+    def L(k):
+        def p(x):
+            product = 1
+            for j in range(n):
+                if j != k:
+                    product *= (x - x[j]) / (x[k] - x[j])
+            return product
+        return p
+
+   
+    P = np.zeros_like(x)
+    for k in range(n):
+        P += y[k] * L(k)(x)
+
+
+    plt.plot(x, f(x), label='f(x)')
+    plt.plot(x, P, label='P(x)')
+    plt.legend()
+    plt.title(f'Interpolation with {n} equally spaced nodes')
+    plt.show()
+
+for n in N:
+    x = np.linspace(a, b, n)
+    y = f(x)
+    P = np.zeros_like(x)
+    for k in range(n):
+        P += y[k] * L(k)(x)
+    error = np.max(np.abs(f(x) - P))
+    print(f'Maximum error for {n} nodes: {error}')
